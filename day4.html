@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clickable Gallery + Anchor & Image Demo</title>
+  <style>
+    :root {
+      --bg: #0f172a;      /* slate-900 */
+      --card: #111827;    /* gray-900 */
+      --muted: #94a3b8;   /* slate-400 */
+      --text: #e5e7eb;    /* gray-200 */
+      --accent: #60a5fa;  /* blue-400 */
+      --ring: rgba(96,165,250,.45);
+      --radius: 16px;
+    }
+
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header {
+      padding: 32px 20px 8px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    header h1 { margin: 0 0 8px; font-size: 1.9rem; }
+    header p { margin: 0; color: var(--muted); }
+
+    .links {
+      max-width: 1100px; margin: 20px auto; padding: 0 20px;
+      display: grid; gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+    .links .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      border: 1px solid #1f2937; /* gray-800 */
+      box-shadow: 0 0 0 0 transparent;
+    }
+    .links .card h3 { margin: 0 0 6px; font-size: 1rem; }
+    .links .card p { margin: 4px 0 0; color: var(--muted); font-size: .95rem; }
+
+    .gallery {
+      max-width: 1100px; margin: 22px auto 60px; padding: 0 20px;
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    .tile {
+      background: var(--card);
+      border: 1px solid #1f2937;
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .tile:focus-within, .tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 6px var(--ring);
+      border-color: #334155; /* slate-700 */
+    }
+    .thumb-wrap {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .meta {
+      padding: 12px 14px 14px;
+    }
+    .meta h4 {
+      margin: 0 0 6px; font-size: 1.05rem; line-height: 1.25;
+    }
+    .meta p {
+      margin: 0; color: var(--muted); font-size: .95rem;
+    }
+
+    footer {
+      max-width: 1100px; margin: 0 auto 80px; padding: 0 20px;
+      color: var(--muted); font-size: .95rem;
+    }
+    code { background: #0b1220; padding: 2px 6px; border-radius: 8px; border: 1px solid #1f2937; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Clickable Gallery — Anchors & Responsive Images Demo</h1>
+    <p>This page shows <code>&lt;a&gt;</code> (href, target, rel, download, mailto, tel) and
+       responsive <code>&lt;img&gt;</code> with <code>srcset</code> + <code>sizes</code>.</p>
+  </header>
+
+  <!-- Anchor/link examples -->
+  <section class="links" aria-labelledby="link-demos">
+    <div class="card">
+      <h3 id="link-demos">External Link (opens in new tab)</h3>
+      <p>
+        <a href="https://example.com"
+           target="_blank"
+           rel="noopener noreferrer"
+           title="Visit Example.com">Visit Example.com</a>
+      </p>
+      <p style="margin-top:6px"><small>
+        Uses <code>target="_blank"</code> and <code>rel="noopener noreferrer"</code> for security.
+      </small></p>
+    </div>
+
+    <div class="card">
+      <h3>Download Link</h3>
+      <p>
+        <a href="https://picsum.photos/id/1015/1024/768.jpg"
+           download="beautiful-landscape.jpg"
+           title="Download landscape photo">
+           Download a sample image
+        </a>
+      </p>
+      <p style="margin-top:6px"><small>
+        Uses <code>download</code> to suggest a filename.
+      </small></p>
+    </div>
+
+    <div class="card">
+      <h3>mailto: Email Link</h3>
+      <p>
+        <a href="mailto:hello@example.com?subject=Gallery%20Inquiry&body=Hi%2C%20I%20love%20your%20gallery!"
+           title="Send an email">Email the gallery owner</a>
+      </p>
+      <p style="margin-top:6px"><small>
+        Uses <code>mailto:</code> with <code>subject</code> and <code>body</code> query params.
+      </small></p>
+    </div>
+
+    <div class="card">
+      <h3>tel: Phone Link</h3>
+      <p>
+        <a href="tel:+15551234567" title="Call support">Call support: +1 555-123-4567</a>
+      </p>
+      <p style="margin-top:6px"><small>
+        Uses <code>tel:</code> with international format.
+      </small></p>
+    </div>
+
+    <div class="card">
+      <h3>In-Page Anchor</h3>
+      <p>
+        <a href="#gallery" title="Jump to gallery">Jump down to the gallery section</a>
+      </p>
+      <p style="margin-top:6px"><small>
+        Uses a fragment <code>#gallery</code> to scroll to a section.
+      </small></p>
+    </div>
+  </section>
+
+  <!-- Clickable responsive gallery -->
+  <section class="gallery" id="gallery" aria-labelledby="gallery-title">
+    <h2 id="gallery-title" style="position:absolute; left:-9999px;">Gallery</h2>
+
+    <!-- Tile 1 -->
+    <article class="tile">
+      <a href="https://picsum.photos/id/1015/1600/1200.jpg"
+         target="_blank" rel="noopener"
+         aria-label="Open large view: Mountain Lake">
+        <div class="thumb-wrap">
+          <img
+            src="https://picsum.photos/id/1015/600/450.jpg"
+            srcset="
+              https://picsum.photos/id/1015/400/300.jpg 400w,
+              https://picsum.photos/id/1015/600/450.jpg 600w,
+              https://picsum.photos/id/1015/900/675.jpg 900w,
+              https://picsum.photos/id/1015/1200/900.jpg 1200w
+            "
+            sizes="(max-width: 520px) 100vw, (max-width: 900px) 50vw, 33vw"
+            alt="Serene mountain lake with pine trees and mist"
+            width="600" height="450" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta">
+          <h4>Mountain Lake</h4>
+          <p>Click to open a larger version in a new tab.</p>
+        </div>
+      </a>
+    </article>
+
+    <!-- Tile 2 -->
+    <article class="tile">
+      <a href="https://picsum.photos/id/1025/1600/1200.jpg"
+         target="_blank" rel="noopener"
+         aria-label="Open large view: Puppy Portrait">
+        <div class="thumb-wrap">
+          <img
+            src="https://picsum.photos/id/1025/600/450.jpg"
+            srcset="
+              https://picsum.photos/id/1025/400/300.jpg 400w,
+              https://picsum.photos/id/1025/600/450.jpg 600w,
+              https://picsum.photos/id/1025/900/675.jpg 900w,
+              https://picsum.photos/id/1025/1200/900.jpg 1200w
+            "
+            sizes="(max-width: 520px) 100vw, (max-width: 900px) 50vw, 33vw"
+            alt="Close-up portrait of a playful puppy looking at the camera"
+            width="600" height="450" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta">
+          <h4>Puppy Portrait</h4>
+          <p>High-res version opens in a new tab.</p>
+        </div>
+      </a>
+    </article>
+
+    <!-- Tile 3 -->
+    <article class="tile">
+      <a href="https://picsum.photos/id/1003/1600/1200.jpg"
+         target="_blank" rel="noopener"
+         aria-label="Open large view: City Skyline at Dusk">
+        <div class="thumb-wrap">
+          <img
+            src="https://picsum.photos/id/1003/600/450.jpg"
+            srcset="
+              https://picsum.photos/id/1003/400/300.jpg 400w,
+              https://picsum.photos/id/1003/600/450.jpg 600w,
+              https://picsum.photos/id/1003/900/675.jpg 900w,
+              https://picsum.photos/id/1003/1200/900.jpg 1200w
+            "
+            sizes="(max-width: 520px) 100vw, (max-width: 900px) 50vw, 33vw"
+            alt="Modern city skyline at dusk with reflections on water"
+            width="600" height="450" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta">
+          <h4>City Skyline at Dusk</h4>
+          <p>Optimized using srcset + sizes for responsive loading.</p>
+        </div>
+      </a>
+    </article>
+
+    <!-- Tile 4 -->
+    <article class="tile">
+      <a href="https://picsum.photos/id/1019/1600/1200.jpg"
+         target="_blank" rel="noopener"
+         aria-label="Open large view: Forest Trail">
+        <div class="thumb-wrap">
+          <img
+            src="https://picsum.photos/id/1019/600/450.jpg"
+            srcset="
+              https://picsum.photos/id/1019/400/300.jpg 400w,
+              https://picsum.photos/id/1019/600/450.jpg 600w,
+              https://picsum.photos/id/1019/900/675.jpg 900w,
+              https://picsum.photos/id/1019/1200/900.jpg 1200w
+            "
+            sizes="(max-width: 520px) 100vw, (max-width: 900px) 50vw, 33vw"
+            alt="Sunlit forest trail with tall trees and soft shadows"
+            width="600" height="450" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta">
+          <h4>Forest Trail</h4>
+          <p>Descriptive alt text improves accessibility & SEO.</p>
+        </div>
+      </a>
+    </article>
+
+    <!-- Tile 5 -->
+    <article class="tile">
+      <a href="https://picsum.photos/id/1024/1600/1200.jpg"
+         target="_blank" rel="noopener"
+         aria-label="Open large view: Beach Horizon">
+        <div class="thumb-wrap">
+          <img
+            src="https://picsum.photos/id/1024/600/450.jpg"
+            srcset="
+              https://picsum.photos/id/1024/400/300.jpg 400w,
+              https://picsum.photos/id/1024/600/450.jpg 600w,
+              https://picsum.photos/id/1024/900/675.jpg 900w,
+              https://picsum.photos/id/1024/1200/900.jpg 1200w
+            "
+            sizes="(max-width: 520px) 100vw, (max-width: 900px) 50vw, 33vw"
+            alt="Calm beach horizon with pastel sky and gentle waves"
+            width="600" height="450" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta">
+          <h4>Beach Horizon</h4>
+          <p>Click to see full-size; small screens load smaller images.</p>
+        </div>
+      </a>
+    </article>
+
+    <!-- Tile 6 -->
+    <article class="tile">
+      <a href="https://picsum.photos/id/1035/1600/1200.jpg"
+         target="_blank" rel="noopener"
+         aria-label="Open large view: Autumn Leaves">
+        <div class="thumb-wrap">
+          <img
+            src="https://picsum.photos/id/1035/600/450.jpg"
+            srcset="
+              https://picsum.photos/id/1035/400/300.jpg 400w,
+              https://picsum.photos/id/1035/600/450.jpg 600w,
+              https://picsum.photos/id/1035/900/675.jpg 900w,
+              https://picsum.photos/id/1035/1200/900.jpg 1200w
+            "
+            sizes="(max-width: 520px) 100vw, (max-width: 900px) 50vw, 33vw"
+            alt="Close shot of autumn leaves in warm golden light"
+            width="600" height="450" loading="lazy" decoding="async" />
+        </div>
+        <div class="meta">
+          <h4>Autumn Leaves</h4>
+          <p>Each thumbnail links to a high-res image in a new tab.</p>
+        </div>
+      </a>
+    </article>
+  </section>
+
+  <footer>
+    <p><strong>Notes:</strong> Use <code>rel="noopener noreferrer"</code> with <code>target="_blank"</code> for security. The
+      <code>srcset</code> + <code>sizes</code> attributes help the browser choose an appropriately sized image
+      for the user’s screen, improving performance. <code>width</code>/<code>height</code> reserve layout space to avoid layout shift.</p>
+  </footer>
+</body>
+</html>
